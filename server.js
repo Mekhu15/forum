@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const body_parser = require('body-parser');
-const MongoClient = require("mongodb").MongoClient;
+//const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectID;
 const DATABASE_NAME = "user";
 const PORT =   process.env.PORT || 8080;
@@ -10,25 +10,27 @@ const cors = require("cors");
 const path = require('path');
 
 app.use(body_parser.json())
-app.use(body_parser.urlencoded({extended:true}))
+app.use(body_parser.urlencoded({extended:false}))
 app.use(cors())
+
 
 const uri = 'mongodb+srv://shopping:mekhla@cluster0-rqmdw.mongodb.net/test?retryWrites=true&w=majority';
 
-var database = null;
-var collection = null;
+
 
 //connection established
 app.listen(PORT, () => {
-    MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, (error, client) => {
+    mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, (error, client) => {
         if(error) {
             throw error;
         }
-         database = client.db(DATABASE_NAME);
-         collection = database.collection("auth");
-        console.log("Connected to `" + DATABASE_NAME + "`!");
+        console.log("Connected");
     });
 });
+
+var Users = require('./routes/Users')
+
+app.use('/users', Users)
 
 // //fetching data
 // app.get("/home", (request, response) => {
