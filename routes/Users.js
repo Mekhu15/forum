@@ -42,3 +42,5 @@ users.post('/register', (req, res) => {
       res.send('error: ' + err)
     })
 })
+
+module.exports = users
