@@ -1,14 +1,39 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-import './index.css';
-import { Link, withRouter } from 'react-router-dom'
+import { register } from './Function';
 
 class Register extends Component {
   constructor(props)
   {
     super(props);
   this.state = {
+     first_name: '',
+      last_name: '',
+      email: '',
+      password: '',
+      errors: {}
        }
+
+        this.handleChange = this.handleChange.bind(this)
+        this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value })
+  }
+
+  handleSubmit(e) {
+    e.preventDefault()
+
+    const newUser = {
+      first_name: this.state.first_name,
+      last_name: this.state.last_name,
+      email: this.state.email,
+      password: this.state.password
+    }
+
+    register(newUser).then(res => {
+      this.props.history.push(`/Signin`)
+    })
   }
 
   render()
@@ -19,8 +44,12 @@ class Register extends Component {
       <form onSubmit={(e)=>this.handleSubmit(e,this.state.id)} className="add">
      <h5>Registration</h5><br/>
        <p> <label>
-          Name:<br/>
-          <input type="text" placeholder="Name" className="form-control" name ="name" value={this.state.name} onChange={this.handleChange} required/>
+          First Name:<br/>
+          <input type="text" placeholder="first name" className="form-control" name ="first_name" value={this.state.first_name} onChange={this.handleChange} required/>
+        </label></p>
+         <p><label>
+          Last Name:<br/>
+          <input type="text" placeholder="last name"  className="form-control" name = "last_name" value={this.state.last_name} onChange={this.handleChange} required/>
         </label></p>
         <p><label>
           Email:<br/>
@@ -28,11 +57,7 @@ class Register extends Component {
         </label></p>
         <p><label>
           password:<br/>
-          <input type="password" placeholder="password"  className="form-control" name = "password" value={this.state.email} onChange={this.handleChange} required/>
-        </label></p>
-        <p><label>
-          Confirm password:<br/>
-          <input type="password" placeholder="same as password"  className="form-control" name = "confirm" value={this.state.email} onChange={this.handleChange} required/>
+          <input type="password" placeholder="password"  className="form-control" name = "password" value={this.state.password} onChange={this.handleChange} required/>
         </label></p>
         <p><input type="submit" value="Register"  className="btn btn-success"/></p>
       </form>

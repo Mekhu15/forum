@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt')
 const User = require('../model/User')
 users.use(cors())
 
-process.env.SECRET_KEY = 'secret'
+const JWT_SECRET = process.env.JWT_SEC;
 
 users.post('/register', (req, res) => {
   const today = new Date()
@@ -23,7 +23,9 @@ users.post('/register', (req, res) => {
     email: req.body.email
   })
     .then(user => {
-      if (!user) {
+      if (user) {
+         return res.status(422).json({ error: 'User already exists' })
+      }
         bcrypt.hash(req.body.password, 10, (err, hash) => {
           userData.password = hash
           User.create(userData)
@@ -34,9 +36,6 @@ users.post('/register', (req, res) => {
               res.send('error: ' + err)
             })
         })
-      } else {
-        res.json({ error: 'User already exists' })
-      }
     })
     .catch(err => {
       res.send('error: ' + err)
@@ -48,8 +47,10 @@ users.post('/login', (req, res) => {
     email: req.body.email
   })
     .then(user => {
-      if (user) {
-        if (bcrypt.compareSync(req.body.password, user.password)) {
+      if (!user) {
+         return res.status(422).json({ error: 'User does not exist' })
+      }
+         if(bcrypt.compareSync(req.body.password, user.password)) {
           // Passwords match
           const payload = {
             _id: user._id,
@@ -57,7 +58,7 @@ users.post('/login', (req, res) => {
             last_name: user.last_name,
             email: user.email
           }
-          let token = jwt.sign(payload, process.env.SECRET_KEY, {
+          let token = jwt.sign(payload, JWT_SECRET, {
             expiresIn: 1440
           })
           res.send(token)
@@ -65,9 +66,7 @@ users.post('/login', (req, res) => {
           // Passwords don't match
           res.json({ error: 'User does not exist' })
         }
-      } else {
-        res.json({ error: 'User does not exist' })
-      }
+      
     })
     .catch(err => {
       res.send('error: ' + err)
