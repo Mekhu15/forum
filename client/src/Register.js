@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import './index.css';
-import  'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap/dist/js/bootstrap.bundle.min';
+import { Link, withRouter } from 'react-router-dom'
 
-class App extends Component {
+class Register extends Component {
   constructor(props)
   {
     super(props);

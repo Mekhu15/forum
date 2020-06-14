@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import {Router, Route, Switch} from 'react-router-dom'
 import './index.css';
 import  'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min';
+import Home1 from './Home1';
+import Home2 from './Home2';
+import Register from './Register';
+import Signin from './Signin';
+import history from './history';
 
 class App extends Component {
   constructor(props)
@@ -191,9 +197,17 @@ render()
 {
   
   return (
-     <div class = "conatiner">
-    <h3> Welcome !!</h3>
-   </div>
+       <Router history={history}>
+                <Switch>
+    <div>
+                              <Route path="/" exact component={Home1} />
+                              <Route path="/Signin" component={Signin} />
+                              <Route path="/Register" component={Register} />
+                              {/* <Route path="/Products" component={Products} /> */}
+                    </div>
+    </Switch>
+     </Router>
+    
   );   
 } 
 }
