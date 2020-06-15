@@ -2,13 +2,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const body_parser = require('body-parser');
-//const MongoClient = require("mongodb").MongoClient;
+const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectID;
-const DATABASE_NAME = "user";
 const PORT =   process.env.PORT || 8080;
 const cors = require("cors");
 const path = require('path');
-
+const DATABASE_NAME = "post";
 app.use(body_parser.json())
 app.use(body_parser.urlencoded({extended:false}))
 app.use(cors())
@@ -16,7 +15,8 @@ app.use(cors())
 
 const uri = 'mongodb+srv://shopping:mekhla@cluster0-rqmdw.mongodb.net/test?retryWrites=true&w=majority';
 
-
+var database = null;
+var collection = null;
 
 //connection established
 app.listen(PORT, () => {
@@ -26,37 +26,45 @@ app.listen(PORT, () => {
         }
         console.log("Connected");
     });
+
+    MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, (error, client) => {
+        if(error) {
+            throw error;
+        }
+         database = client.db(DATABASE_NAME);
+         collection = database.collection("comments");
+        console.log("Connected to `" + DATABASE_NAME + "`!");
+    });
 });
 
 var Users = require('./routes/Users')
-
+// var Posts = require('./routes/Posts')
 app.use('/users', Users)
+// app.use('./posts',Posts)
 
-// //fetching data
-// app.get("/home", (request, response) => {
-//     collection.find({}).sort({name: 1}).toArray((error, result) => {
-//         if(error) {
-//             return response.status(500).send(error);
-//         }
-//         response.send(result);
-//     });
-// });
+// //fetching comments
+app.get("/home", (request, response) => {
+    collection.find({}).toArray((error, result) => {
+        if(error) {
+            return response.status(500).send(error);
+        }
+        response.send(result);
+    });
+});
 
-//     // to add contacts
-// app.post("/home", (request, response) => {
-//     var item = {
-//         name: request.body.name,
-//         phoneNumber: request.body.phoneNumber,
-//         email: request.body.email,
-//         dateOfBirth: request.body.dateOfBirth
-//     }
-//     collection.insertOne(item, (error, result) => {
-//         if(error) {
-//             return response.status(500).send(error);
-//         }
-//         response.send(result);
-//     });
-// });
+    // to add contacts
+app.post("/home", (request, response) => {
+    var item = {
+        name: request.body.name,
+        date: Date.now
+    }
+    collection.insertOne(item, (error, result) => {
+        if(error) {
+            return response.status(500).send(error);
+        }
+        response.send(result);
+    });
+});
   
 
 // //to read data
