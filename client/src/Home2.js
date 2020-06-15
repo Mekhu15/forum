@@ -20,7 +20,7 @@ class Home2 extends Component {
 }
 print = () =>
 {
-  axios.get('posts/allpost').then(response => {
+  axios.get('/allpost').then(response => {
     const data = response.data;
     this.setState({
       post: data,
@@ -34,7 +34,7 @@ print = () =>
 }
 
 createPost(e){
-  axios.post('posts/createpost',
+  axios.post('/createpost',
   {body:this.state.body})
       .then(() => {
         console.log('Data has been sent to the server');

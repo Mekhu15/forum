@@ -6,14 +6,10 @@ app.use(cors())
 
 
 app.get('/allpost',(req,res)=>{
-    Post.find()
-    .populate("postedBy","_id name")
-    .populate("comments.postedBy","_id name")
-    .sort('-createdAt')
-    .then((posts)=>{
+    Post.find().then((posts)=>{
         res.json({posts})
     }).catch(err=>{
-        console.log(err)
+        console.log(err);
     })
     
 })
@@ -23,10 +19,8 @@ app.post('/createpost',(req,res)=>{
     if(!body ){
       return  res.status(422).json({error:"Please add all the fields"})
     }
-    req.user.password = undefined
     const post = new Post({
-        body,
-        postedBy:req.user
+        body
     })
     post.save().then(result=>{
         res.json({post:result})

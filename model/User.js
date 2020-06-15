@@ -24,9 +24,6 @@ const UserSchema = new Schema({
   },
    resetToken:String,
     expireToken:Date,
-
-     followers:[{type:ObjectId,ref:"User"}],
-    following:[{type:ObjectId,ref:"User"}]
 })
 
 module.exports = User = mongoose.model('users', UserSchema)
